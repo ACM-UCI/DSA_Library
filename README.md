@@ -11,10 +11,10 @@ Contains a library of premade templates for common data structures and algorithm
 		* Operations on said ranges must be associative
 
 * Functionality
-	* Builds from arr $O(N)$
-	* Updates individual values $O(logN)$
-	* Queries on associative range $O(logN)$
-	* Prints debug elements $O(N)$
+	* Builds from arr O(N)
+	* Updates individual values O(logN)
+	* Queries on associative range O(logN)
+	* Prints debug elements O(N)
 	* Does not currently support lazy propagation
 * segment_tree.cpp
 	* Declare with c++ template
