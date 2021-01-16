@@ -29,6 +29,32 @@ Contains a library of premade templates for common data structures and algorithm
 ---
 
 ### Suffix Array
+* About Suffix Arrays
+	* By sorting the suffixes of a string a lot of powerful computation can be done
+		* These often involve using some sort of binary search query on the data
+	* A suffix array is efficiently stored as an array of integers representing the order of the suffixes by their indices
+	* Alongside the suffix array is the longest common prefix (LCP) array
+		* This array contains between suffixes *adjacent to each other in the suffix array* the length of their common prefix
+		* What is important about such is the following:
+			* For any list of sorted strings, the LCP between any two strings is the minimum value in between their indices in the LCP array
+			* Thus any range minimum query (RMQ) structure can be used to calculate the longest common prefix between any two suffixes in log(N) time
+* Functionality
+	* Constructs the suffix array (O(NlogN)) and LCP array (O(N))
+	* The corresponding suffix array and LCP array are easily accessible for computation
+	* TODO: will add a basic segment tree for LCP queries (may want to change to Sparse Query Data Table)
+* suffix_array.cpp
+	* Be sure to read the commonts at the top of the namespace
+	* order of construction must be followed precisely
+	* an example declaration follows:
+```cpp
+std::cin >> SuffixArray::str;
+SuffixArray::str += '$';		// Having a trailing character is necessary for the sort to perform properly
+SuffixArray::size = SuffixArray::str.length();
+SuffixArray::buildSA();
+SuffixArray::buildLCP();
+SuffixArray::printSA();
+SuffixArray::printLCP();
+```
 
 ---
 
