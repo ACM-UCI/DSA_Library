@@ -59,6 +59,19 @@ SuffixArray::printLCP();
 ---
 
 ### reTrieval Tree
+* About reTrieval Trees
+	* A reTrieval tree (Trie) - or prefix tree - is a tree structure for efficiently matching strings in a set
+* Functionality
+	* Builds the Trie in O(NW) where N is the number of strings and W is the length of each string
+	* IMPORTANT: Can only handle strings of the 26 lowercase characters
+		* This may have to be manually changed depending on the problem
+	* Can compute whether a particular word exists in the Trie in O(W)
+	* Can perfom efficient longest common prefix queries in O(log(W))
+* trie.cpp
+	* Specific details of Trie implementation are intentially hidden
+	* If you would like direct access on the Trie there is an accessor method for such
+	* IMPORTANT: if you plan on using LCP(), you must first call buildLCA()
+	* Memory management is guaranteed to be handled for you so long as you do not use direct access to the internal TrieNode structure
 
 ---
 
@@ -70,3 +83,7 @@ SuffixArray::printLCP();
 * Work in conjunction with Floyd Warshalls
 
 ---
+
+
+## Algorithms
+TODO - Make some algorhythms

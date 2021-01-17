@@ -1,9 +1,16 @@
 #include <bits/stdc++.h>
 
 
-
+// Implements a reTRIEval tree and uses a system of 'nodeIDs' for matching nodes
+// 	The use of the nodeIDs can be used for the computation of the longest common prefix (LCP)
+// Construction of Trie is simple
+// 	Trie t;
+// 	t.addWord(someString);
+// 	t.getWordID(someString);	// returns the id of the leaf of this string, return -1 if the string doesnt exist
+// 	t.buildLCA();				// Builds the lowest common ancestor (LCA) range array and its corresponding Segment Tree to perform range minimum query operations (RMQ) to find LCP
+// 								// Note: this needs to be called before and LCP queries are called
+// 	t.LCP(nodeID_1, nodeID_2);	// computes the length of the common prefix between the two strings corresponding the two leaf nodes. 
 class Trie {
-
 private:
 	
 	struct SegTree {
@@ -147,6 +154,7 @@ public:
 		return curr->is_word ? curr->nodeID : -1;
 	}
 
+	// IMPORTANT: Must be called before LCP
 	void buildLCA() {
 		idx = 0;
 		L.assign(numNodes<<1, 0);
@@ -159,12 +167,18 @@ public:
 	}
 
 	// Returns the longest common prefix between any two strings in the Trie if their nodeIDs are known
+	// IMPORTANT: must call buildLCA before calling this method
 	int LCP(int nodeID1, int nodeID2) {
 		int hu = H[nodeID1];
 		int hv = H[nodeID2];
 		if (hu > hv) std::swap(hu,hv);
 
 		return st.rmq(hu, hv+1);	// returns the index of the lcp
+	}
+
+	// Gives access to the root to the Trie for greater extensibility
+	TrieNode* getRoot() {
+		return root;
 	}
 	
 };
