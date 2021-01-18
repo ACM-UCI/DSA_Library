@@ -80,10 +80,32 @@ SuffixArray::printLCP();
 ---
 
 ### Matrix
-* Work in conjunction with Floyd Warshalls
+* Supports basic operations such as multiplication, addition, transpose
+* TODO: Work in conjunction with Floyd Warshalls
 
 ---
+
+### MathVector
+* implement dot product, cross product, angle between vectors, sum of vectors, to polar coords, etc
+
+---
+
+### Red Black Tree for Python Plebs
+
+---
+
+### Fenwick Tree (BIT)
 
 
 ## Algorithms
 TODO - Make some algorhythms
+
+### Convex Hull
+### Euler's Totient Function
+### Max Flow
+### Max Flow Min Cost
+### Dijkstras
+### Bellman-Ford
+### Floyd-Warshalls
+### KMP
+### Aho-Corasick
