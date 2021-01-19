@@ -94,6 +94,16 @@ SuffixArray::printLCP();
 
 ---
 
+### Priority Queue for Simultaneous OOP simps and Python Plebs
+* About Priority Queues
+	* using a heap, can access the maximal (or minimal) element in a set in O(logN)
+* Functionality
+	* Essentially a wrapper for Python's heapq library
+	* implements basic push, pop, peek operations
+	* Allows construction with a `key()` function which is used for comparison (similar to `sorted()`)
+
+---
+
 ### Fenwick Tree (BIT)
 
 

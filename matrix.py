@@ -1,3 +1,33 @@
+from functools reduce
+
+class Vector:
+    def __init__(self, dimension, vals=None):
+        self.dim = dimension
+        if vals == None:
+            self.v = [0 for _ in range(dimension)]
+        else
+            assert len(vals) == self.dim, 'length of vals does not equal the dimension given'
+            self.v = list(vals)
+
+    def __len__(self):
+        return self.dim
+
+    def __add__(self, other):
+        if type(other) == Vector && self.dim == other.dim:
+            return Vector(self.dim, [a+b for a,b in zip(self.vals, other.vals)])
+        else:
+            raise TypeError(f'other must be of type Vector, was of type{type(other)}')
+
+    # only for scaling, do not use for dot product or cross product
+    def __mul__(self, other):
+        return Vector(self.dim, [a*other for a in self.vals])
+
+    @staticmethod
+    def dot_product(a, b):
+        assert type(a) == Vector and type(b) == Vector, 'args must be type Vector'
+        assert a.dim == b.dim, 'vectors are not of equal length'
+        return reduce((lambda x,y: x+y), (x*y for x,y in zip(a,b)))
+            
 
 class Matrix:
     def __init__(self, base, height):
