@@ -28,6 +28,22 @@ Contains a library of premade templates for common data structures and algorithm
 
 ---
 
+### Sparse Table
+* About Sparse Tables
+	* Similar to Segment Trees in that you can efficiently compute queries over associative ranges
+	* Difference with segment tree is that it is cannot handle dynamic updates
+	* Recommended that if presented with the choice go instead with the segment tree as is is more flexible
+		* only turn to this if you are struggling with the segment tree
+* Functionality
+	* Currently it is implemented to solve the range minimum query problem
+	* Constructs itself in O(NlogN)
+	* Each query is O(1) -> this is the advantage of sparse tables: if you have alot of queries over a static range
+* sparse_table.py
+	* Do not ask me how it works, I copied it from Halim
+		* It works, thats all that needs to matter
+
+---
+
 ### Suffix Array
 * About Suffix Arrays
 	* By sorting the suffixes of a string a lot of powerful computation can be done
@@ -55,6 +71,12 @@ SuffixArray::buildLCP();
 SuffixArray::printSA();
 SuffixArray::printLCP();
 ```
+
+* suffix_array.py
+	* Everything is done through the `SuffixArray` class interface
+	* You must append special characters like '$' yourself
+	* A suffix array and a rank array are created in the constructor
+	* calling `longestCommonPrefixArray()` constructs and returns the LCP array
 
 ---
 
