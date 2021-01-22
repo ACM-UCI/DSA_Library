@@ -132,8 +132,30 @@ SuffixArray::printLCP();
 ## Algorithms
 TODO - Make some algorhythms
 
+### Common Mathematical Operations
+* Most c++ math functions are in `math_functions.cpp` with exception of euler's totient function
+* it recommended not to copy the entire namespace but rather just the functions you will need
+#### Modulo
+* This is included for C++ because C++ does not handle negative modulo very well
+	* `-11%5` should result in 4 however C++ evaluates this as -1
+		* our implementation correctly evaluates `modulo(-11,5)` as 4
+#### Power Over Modulo
+* Finds (b^k)%mod in log(k) time.
+* Not implemented in python because `math.pow()` already has this functionality
+* cannot currently handle negative base currently
+#### Divide Over Modulo
+* Finds (a/b) % mod
+* This only works for when mod is a prime number
+#### GCD - Greatest Common Divisor
+* Efficiently returns the greatest common divisor between two integers
+#### LCM - Least Common Multiple
+* Efficiently returns the least common multiple between two integers
+#### Euler's Totient Function
+* Note that this is implemented in `totient.cpp`
+* Counts the number of integers between 1 and N that are relatively prime (coprime) with N
+	* `a` and `b` are coprime if `gcd(a,b) == 1`
+
 ### Convex Hull
-### Euler's Totient Function
 ### Max Flow
 ### Max Flow Min Cost
 ### Dijkstras
