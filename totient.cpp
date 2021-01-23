@@ -1,6 +1,5 @@
 #include <vector>
 #include <unordered_map>
-#include <iostream>
 long long totient(long long a) {
 	class delayedPropagationEratosthenes{
 		public:
@@ -26,7 +25,6 @@ long long totient(long long a) {
 		long long prime = sieve.getNext();
 		long long counter{};
 		while(a % prime == 0){
-			std::cout << a % prime << ' ' <<a << '\n';
 			a /= prime;
 			if(counter)
 				counter *= prime;
