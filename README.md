@@ -156,10 +156,30 @@ TODO - Make some algorhythms
 	* `a` and `b` are coprime if `gcd(a,b) == 1`
 
 ### Convex Hull
+### Tarjans DFS
+* Tarjans algorithm, or DFS Low Link, is a versatile algorithm that can solve problems such as Strongly Connected Components (SCC) and Articulation Points/Bridges
+* tarjan_scc.cpp
+	* As the name indicates, this implementation solves the Strongly Connected Components problem
+	* searches for a "low-link" or, in other words, a connection to node already searched in the dfs
+		* the presence of a low-link indicates the existence of a strongly connected component along that path
 ### Max Flow
 ### Max Flow Min Cost
 ### Dijkstras
 ### Bellman-Ford
+* Single Source Shortest Path for Negative Weighted Graphs
+	* Dijkstras will fail on a negative weighted graph
+	* Bellman-Ford handles negative weights properly
+* bellman_ford.cpp
+	* At the top of the file are some `typedefs` and constants that should be set by the user according to the problem
+	* The bellmanFord() function returns a vector (typedef'd to `Costs`)
+		* the `ith` index of this vector is the cost of the shortest path from the source to the `ith` node
+		* if the value is `INFINITY` that means the node is unreachable
+		* if the value is `NEG_INFINITY` that means there exists a negative cycle on the shortest path so the cost is indeterminate
 ### Floyd-Warshalls
 ### KMP
 ### Aho-Corasick
+### Longest Increasing Subsequence
+* Given an array of data returns the elements of the longest increasing subsequence
+* lis_nlogn.cpp
+	* Solves the problem in NlogN
+		* compared to the easier to understand N^2 DP solution
