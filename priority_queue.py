@@ -13,6 +13,9 @@ class PriorityQueue:
         self.key = (lambda x: x) if key == None else key
         self.heap = [(self.key(v), v) for v in vals]
         heapify(self.heap)
+      
+    def __len__(self):
+        return len(self.heap)
 
     def push(self, v):
         heappush(self.heap, (self.key(v), v))
