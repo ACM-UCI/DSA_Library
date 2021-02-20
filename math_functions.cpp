@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <cmath>
 
 namespace math {
 
@@ -65,4 +67,142 @@ namespace math {
 		return a * (b / gcd(a,b));
 	}
 	// ===== End LCM ===== //
+	
+	// ===== Begin Sums ===== //
+	// All bounds in this section are start inclusive and end exclusive
+	
+
+	// This is the equivalent to python's sum(i for i in range(start, end, step))
+	// Requirements:
+	// 	- start < end
+	// 	- step >= 0
+	// If you want to sum with negative step, flip sum around and do with positive step
+	long long arithmetic_sum(long long start, long long end, long long step) {
+		long long n = 1+(end-start-1)/step;
+		long long ans;
+		switch (n&1) {
+			case 0:
+				// even
+				ans = (2*start + (n-1)*step)*(n>>1);
+				break;
+			case 1:
+				// odd
+				ans = (start + ((n-1)>>1)*step)*n;
+				break;
+		}
+		return ans;
+	}
+
+	// Geometic sum on two finite bounds
+	// Requirements:
+	// 	- start < end
+	double geometric_sum(int start, int end, double a) {
+		return (std::pow(a, start) - std::pow(a, end))/(1.0 - a);
+	}
+
+	// Geometric sum with finite start and infinite end
+	// Requirements:
+	// 	- |a| < 1
+	double geometric_sum(int start, double a) {
+		return (std::pow(a, start))/(1.0-a);
+	}
+
+	// sum from k=0 to infinity of k*(a**k)
+	double geometric_sum_scaled(double a) {
+		return a/((1-a)*(1-a));
+	}
+	// ===== End Sums ===== //
+	
+	// ===== Begin Linear Algebra ===== //
+	template<typename T>
+	struct Vector3D {
+		T x,y,z;
+
+		T dotProduct(const Vector3D<T>& v) const {
+			return x*v.x + y*v.y + z*v.z;
+		}
+
+		Vector3D<T> crossProduct(const Vector3D<T>& v) const {
+			return Vector3D{ y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x };
+		}
+
+		Vector3D<T> scale(T amt) const {
+			return Vector3D{x*amt, y*amt, z*amt};
+		}
+
+		T ccw(const Vector3D<T>& v) const {
+			return x*v.y - y*v.x;
+		}
+
+		T magnitudeSquared() const {
+			return x*x + y*y + z*z;
+		}
+
+		double magnitude() const {
+			return std::sqrt(magnitudeSquared());
+		}
+
+		double angleBetween(const Vector3D<T>& v) const {
+			std::acos(dotProduct(v)/(magnitude() + v.magnitude()));
+		}
+
+		// finds projection of this onto v
+		Vector3D<double> projectionOnto(const Vector3D<T>& v) const {
+			double amt = ((double) dotProduct(v))/(v.magnitudeSquared());
+			return Vector3D<double>{amt*v.x, amt*v.y, amt*v.z};
+		}
+
+		Vector3D<double> getUnitVector() const {
+			double mag = magnitude();
+			return Vector3D<double>{x/mag, y/mag, z/mag};
+		}
+
+		Vector3D<T> operator+(const Vector3D<T>& v) const {
+			return Vector3D{ x+v.x, y+v.y, z+v.z };
+		}
+
+		Vector3D<T> operator-(const Vector3D<T>& v) const {
+			return Vector3D{ x-v.x, y-v.y, z-v.z };
+		}
+
+
+		// This does radial sort
+		// Only works for vectors in 2D
+		bool operator<(const Vector3D<T>& v) const {
+			T res = ccw(v);
+			T a = ccw(Vector3D{1,0,0});
+			T b = v.ccw(Vector3D{1,0,0});
+
+			if ((a < 0 && b < 0) || (a > 0 && b > 0)) {
+				if (res == 0) {
+					T lenA = magnitudeSquared();
+					T lenB = v.magnitudeSquared();
+
+					if (y == 0 && v.y == 0) {
+						// edge case to handle
+						return x < v.x;
+					}
+					
+					if (a > 0) {
+						return lenA < lenB;
+					} else {
+						return lenA > lenB;
+					}
+				} else {
+					return res > 0;
+				}
+			} else if (a < 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+	};
+	// ===== End Linear Algebra ===== //
+}
+
+int main() {
+	
+	return 0;
 }
