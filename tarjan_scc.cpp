@@ -1,11 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <functional>
-std::vector<std::vector<int>> TarjanSCC(std::vector<std::vector<int>> &adj) {
-	int clock = 0;
-	std::vector<int> low, dis, has, stk; // 'has' checks if 'stk' has a node
-	low = dis = has = std::vector<int>(adj.size());
-	std::vector<std::vector<int>> sccs;
+std::vector<std::vector<int>> tarjanSCC(std::vector<std::vector<int>> &adj) {
+	int n = adj.size(), clock = 0;
+	std::vector<int> low(n), dis(n); // 'dis'covery time and 'low'est node reachable
+	std::vector<int> has(n), stk; // 'has' checks if 'stk' has a node
+	std::vector<std::vector<int>> sccs; // holds a list of sccs with their nodes
 	std::function<void (int)> dfs = [&](int u) {
 		dis[u] = low[u] = ++clock;
 		stk.push_back(u);
