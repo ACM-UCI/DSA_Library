@@ -1,4 +1,7 @@
 //below controls type of data being stored
+
+#include <cmath>
+
 typedef double TYPE;
 struct point{
 	TYPE x;
@@ -15,17 +18,56 @@ bool operator!=(const point&a, const point&b){
 	return !(a.x==b.x && a.y==b.y);
 }
 
+struct point3 {
+    TYPE x{},y{},z{};
+    point3(TYPE x, TYPE y, TYPE z) : x{x}, y{y}, z{z} { }
+    point3(const point &p) : x{p.x}, y{p.y} { }
+};
+
 struct gvector{
 	point start;
 	point end;
 	TYPE x;
 	TYPE y;
+
+    gvector(TYPE x, TYPE y) : x{x}, y{y} { }
+
 	gvector(point a, point b){
 		start = a;
 		end = b;
 		x = b.x - a.x;
 		y = b.y - a.y;
 	}
+
+    TYPE dotProduct(const gvector &other) const {
+        return x*other.x + y*other.y;
+    }
+
+    void scale(TYPE sc) { x *= sc; y *= sc; }
+    double magnitude() const { return std::hypot(x, y); }
+    double angle() const { return std::atan2(y, x); }
+
+    /*
+     * This will only work if TYPE is double
+    gvector unitVector() const {
+        double mag = magnitude();
+        return gvector(x/mag, y/mag);
+    }
+    */
+};
+
+struct g3vector {
+
+    TYPE x{}, y{}, z{};
+    g3vector(TYPE x, TYPE y, Type z) : x{x}, y{y}, z{z} { }
+    g3vector(const point3 &a, const point3 &b) : x{b.x-a.x}, y{b.y-a.y}, z{b.z-a.z} { } 
+
+    g3vector crossProduct(const g3vector &other) const {
+        return g3vector(y*other.z - z*other.y, z*other.x - x*other.z, x*other.y - y*other.x);
+    }
+
+    void scale(Type sc) { x *= sc; y *= sc; z *= sc; }
+    double magnitude() const { return std::sqrt(x*x + y*y + z*z); }
 };
 
 struct line{
