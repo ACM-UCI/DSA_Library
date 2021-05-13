@@ -1,14 +1,9 @@
 #include <vector>
-#include <unordered_map>
 #include <cmath>
-long long totient(long long a) {
+long long totient(long long a, std::vector<long long> &primes){
 	//if you have used sieve to precompute primes
-	//use #define PRECOMPUTED
-	//make sure the array storing the primes is names "primes"
 	//sieve must go to primes larger than or equal to a
 	//   (in case a is a prime)
-
-	#ifdef PRECOMPUTED
 	//O(logn) complexity
 	long long output{};
 	for(int i{}; i < primes.size(); ++i){
@@ -27,9 +22,9 @@ long long totient(long long a) {
 		else
 			output = counter*(primes[i]-1);
 	}
-	return output;
-	#endif
-	#ifndef PRECOMPUTED
+	return output;	
+}
+long long totient(long long a) {
 	//O(sqrt(n)) complexity
 
 	long long output{};
@@ -67,5 +62,4 @@ long long totient(long long a) {
 			output = a-1;
 	}
 	return output;
-	#endif
 }
