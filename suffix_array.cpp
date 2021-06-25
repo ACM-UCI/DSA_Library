@@ -115,7 +115,7 @@ namespace SuffixArray {
 	}
 
 	void buildLCP() {
-		LCP.assign(size-1,0);
+		LCP.assign(size,0);
 
 		// The following takes advantage of the fact that the LCP(suffix-1, suffix) will be at most one larger than LCP(suffix, suffix+1)
 		int currMatch = 0;
@@ -128,6 +128,7 @@ namespace SuffixArray {
 			LCP[RA[suffixAbove]] = currMatch;
 			currMatch = std::max(0, currMatch-1);
 		}
+        LCP.pop_back();
 	}
 
 	void printSA() { printVector(SA); }
@@ -152,13 +153,13 @@ namespace SuffixArray {
 int main() {
 
 //	The following is an example workflow to compute and print out the suffix array and the longest common prefix
-//	std::cin >> SuffixArray::str;
-//	SuffixArray::str += '$';
-//	SuffixArray::size = SuffixArray::str.length();
-//	SuffixArray::buildSA();
-//	SuffixArray::buildLCP();
-//	SuffixArray::printSA();
-//	SuffixArray::printLCP();
+	std::cin >> SuffixArray::str;
+	SuffixArray::str += '$';
+	SuffixArray::size = SuffixArray::str.length();
+	SuffixArray::buildSA();
+	SuffixArray::buildLCP();
+	SuffixArray::printSA();
+	SuffixArray::printLCP();
 
 	return 0;
 }
