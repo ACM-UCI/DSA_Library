@@ -1,42 +1,65 @@
 #include <vector>
-#include <unordered_map>
-long long totient(long long a) {
-	class delayedPropagationEratosthenes{
-		public:
-			std::unordered_map<long long, std::vector<long long>> nums;
-			long long currentNum;
-			delayedPropagationEratosthenes(){
-				currentNum = 2;
-			}
-			long long getNext(){
-				while(nums.count(currentNum)){
-					for(long long i = 0; i < nums[currentNum].size(); ++i){
-						nums[currentNum + nums[currentNum][i]].push_back(nums[currentNum][i]);
-					}
-					nums.erase(currentNum);
-					currentNum++;
-				}
-				return currentNum++;
-			}
-	};
-	delayedPropagationEratosthenes sieve = delayedPropagationEratosthenes();
+#include <cmath>
+long long totient(long long a, std::vector<long long> &primes){
+	//if you have used sieve to precompute primes
+	//sieve must go to primes larger than or equal to a
+	//   (in case a is a prime)
+	//O(logn) complexity
 	long long output{};
-	while(a != 1 && a != -1){
-		long long prime = sieve.getNext();
-		long long counter{};
-		while(a % prime == 0){
-			a /= prime;
+	for(int i{}; i < primes.size(); ++i){
+		int counter{};
+		while(a%primes[i] == 0){
+			a /= primes[i];
 			if(counter)
-				counter *= prime;
+				count *= primes[i];
 			else
 				counter = 1;
 		}
-		if(!counter)
+		if(counter == 0)
 			continue;
 		if(output)
-			output *= counter * (prime-1);
+			output *= counter*(primes[i]-1)
 		else
-			output = counter * (prime-1);
+			output = counter*(primes[i]-1);
+	}
+	return output;	
+}
+long long totient(long long a) {
+	//O(sqrt(n)) complexity
+
+	long long output{};
+	long long counter{};
+	while(a%2 == 0){
+		a /= 2;
+		if(counter)
+			counter *= 2;
+		else
+			counter = 1;
+	}
+	if(counter != 0){
+		output = counter;
+	}
+	for(int i=3; i < (long long)std::sqrt(a); i += 2){
+		counter = 0;
+		while(a%i == 0){
+			a /= i;
+			if(counter)
+				counter *= i;
+			else
+				counter = 1;
+		}
+		if(counter == 0)
+			continue;
+		if(output)
+			output *= counter*(i-1);
+		else
+			output = counter * (i-1);
+	}
+	if(a != 1){
+		if(output)
+			output *= a-1;
+		else
+			output = a-1;
 	}
 	return output;
 }
