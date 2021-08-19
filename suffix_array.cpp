@@ -1,165 +1,130 @@
-#include <bits/stdc++.h>
+/*
+ *             __  __ _                                   
+ *  ___ _   _ / _|/ _(_)_  __   __ _ _ __ _ __ __ _ _   _ 
+ * / __| | | | |_| |_| \ \/ /  / _` | '__| '__/ _` | | | |
+ * \__ \ |_| |  _|  _| |>  <  | (_| | |  | | | (_| | |_| |
+ * |___/\__,_|_| |_| |_/_/\_\  \__,_|_|  |_|  \__,_|\__, |
+ *                                                  |___/ 
+ * Author: Ryan Yoshida
+ *
+ * Notes:
+ *  Is your code not working?
+ *      Make sure container size N is set properly.
+ *      Make sure the terminating character is the unique lexicographically smallest character of you set of characters
+ */
 
-// = BEGIN SUFFIX ARRAY ==============================================
-//     * All global variables will be initially unset, this must manually be done
-//     * This file is structured such that it gives maximum flexibility to the user
-//     * The standard procedure is as follows:
-//     	1. set SuffixArray::size and SuffixArray::str
-//     	2. call buildSA()
-//     	3. call buildLCP() -> if needed
-//     * queries on SuffixArray::SA must manually be done
-//     * A simple segment tree will be provided for RMQ on LCP for longest common prefix
-namespace SuffixArray {
+#include <ostream>
+#include <algorithm>
+#include <vector>
+#include <numeric>
 
-	
-	// === DECLARE GLOBAL VARIABLES ================================
-	int size;					// size: the length of the string
-	std::vector<int> SA, RA;	// SA: the suffix array | RA: the rank array
-	std::vector<int> LCP;		// LCP: longest common prefix
-	std::string str;			// str: the original string
-	// === END GLOBAL VARIABLES ====================================
+template <typename T=char, T term='$'>
+class SuffixArray {
+public:
+    class LCP;
 
+private:
+    size_t size;
+    std::vector<T> str;
+    std::vector<int> sa;
+    std::vector<int> ra;
 
+public:
+    template <typename InputIt>
+    SuffixArray(InputIt first, InputIt last) : size{0} {
+        for (InputIt cur = first; cur != last; ++cur, ++size);
+        ++size; // determine size
+        str.assign(size, T{}); sa.assign(size, 0); ra.assign(size, 0);
+        std::copy(first, last, std::begin(str)); str[size-1] = term;         // initialize str
+        std::iota(std::begin(sa), std::end(sa), 0);                          // initialize sa
+        std::transform(std::begin(str), std::end(str), std::begin(ra), [](const T &v) ->int { return static_cast<int>(v); }); // intialize ra
 
-	// === DEFINE FUNCTION PROFILES ================================
-	void buildSA();
-		// Description:
-		// 	Constructs the SA and RA from scratch
-		// Requirements:
-		// 	1. SuffixArray::str and Suffixarray::size are initialized
+        std::stable_sort(std::begin(sa), std::end(sa), [&](const int &a, const int &b)->bool { return ra[a] < ra[b]; });
+        rerank(0); // allows the handling of negative values
+        for (int k = 0; (1<<k) <= static_cast<int>(size); ++k) {
+            for (int i = 0; i < static_cast<int>(size); ++i) {
+                sa[i] = (sa[i] - (1<<k) + static_cast<int>(size)) % static_cast<int>(size);
+            }
+            countSort();
+            rerank(1<<k);
 
-	void countSort(int);
-		// Description:
-		// 	Sorts SA by the kth indice after i (will only make sense if you understand how suffix arrays are built)
-		// 	Basically like a radix sort
-		// 	Used by buildSA()
-	
-	void rank(int);
-		// Description
-		// 	Reranks the array
-		// 	Will be called by buildSA() after countSort is called
-	
-	void buildLCP();
-		// Description
-		// 	Determines the longest common prefix between each sorted suffix
-		// 	Can be used with an RMQ algorithm for efficiently finding LCP between any two suffixes
-		// Requirements
-		// 	SA must be completely built before calling
-	
-	// ===== DEBUGGING FUNCTIONS =================================
-	void printSA();
-	void printRA();
-	void printLCP();
-	void printVector(const std::vector<int>& v);
-	// ===== END DEBUGGING FUNCTIONS =============================
-	
-	// === END FUNCTION PROFILES ===================================
+            if (ra[sa[size-1]] == static_cast<int>(size)-1) break;
+        }
+    }
 
+private:
+    void countSort() {
+        std::vector<int> cnt(size, 0);
+        for (const int rank : ra) { ++cnt[rank]; }
+        int sum = 0; for (int &c : cnt) { int tmp = c; c = sum; sum += tmp; } // determine start pos of each rank
 
+        std::vector<int> sa_(size, 0);
+        for (const int cur : sa) { sa_[cnt[ra[cur]]++] = cur; } // resort sa
+        sa = sa_; // move operator applied here
+    }
 
-	// === DEFINE FUNCTION IMPLEMENTATIONS =========================
-	void buildSA() {
-		
-		// initialize data
-		SA.assign(size,0);
-		RA.assign(size,0);
-		for (int i = 0; i < size; ++i) {
-			SA[i] = i;
-			RA[i] = str[i];
-		}
+    void rerank(int k) {
+        std::vector<int> ra_(size, 0);
+        int r = ra_[sa[0]] = 0;
+        for (int i = 1; i < static_cast<int>(size); ++i) {
+            int newL=ra[sa[i]],     newR=ra[(sa[i]+k)%size];
+            int preL=ra[sa[i-1]],   preR=ra[(sa[i-1]+k)%size];
+            if (newL != preL || newR != preR) ++r;
+            ra_[sa[i]] = r;
+        }
+        ra = ra_;
+    }
 
-		for (int i = 0; (1<<i) <= size; ++i) {
-			countSort(1<<i);	// First sort SA[i+k]
-			countSort(0);		// Then stable sort by SA[i]
+    
 
-			rank(1<<i);			// rerank 
+public:
+    size_t getSize() const { return size; }
+    int getRank(int suffix) const { return ra[suffix]; }
+    int operator[] (const int &i) const { return sa[i]; }
 
-			if (RA[SA[size-1]] == size-1) break;	// Time saving trick
-		}
-
-	}
-
-	void countSort(int k) {
-		int maxi = std::max(300, size);	// 300 because that captures an entire byte (1 char) plus more
-		std::vector<int> buckets(maxi);
-		for (int i = 0; i < size; ++i) {	// Count occurences of each rank
-			++buckets[RA[(SA[i]+k)%size]];
-		}
-
-		int sum = 0;
-		for (int i = 0; i < maxi; ++i) {	// compute cumulative sums
-			int temp = buckets[i];
-			buckets[i] = sum;
-			sum += temp;
-		}
-
-		std::vector<int> tSA = SA;
-		for (int i = 0; i < size; ++i) {	// Resorts the array based on the updated rank of each suffix
-			int newRank = buckets[RA[(tSA[i]+k)%size]]++;
-			SA[newRank] = tSA[i];
-		}
-	}
-
-	void rank(int k) {
-		std::vector<int> tRA = RA;
-		int r = RA[SA[0]] = 0;
-		for (int i = 1; i < size; ++i) {
-
-			// The following increments r if suffix SA[i] can be determined to be lexicographically greater than SA[i-1]
-			if ( tRA[SA[i]] != tRA[SA[i-1]]  ||  tRA[(SA[i]+k)%size] != tRA[(SA[i-1]+k)%size] ) {
-				++r;
-			}
-
-			RA[SA[i]] = r;
-		}
-	}
-
-	void buildLCP() {
-		LCP.assign(size,0);
-
-		// The following takes advantage of the fact that the LCP(suffix-1, suffix) will be at most one larger than LCP(suffix, suffix+1)
-		int currMatch = 0;
-		for (int suffix = 0; suffix < size-1; ++suffix) {	// suffix indexes the original string, indexing RA[suffix] gives the ordering of that suffix
-			int suffixAbove = SA[RA[suffix] - 1];	// index of the suffix ranked before SA[suffix]
-
-			while (std::max(suffix, suffixAbove)+currMatch < size && str[suffix+currMatch] == str[suffixAbove+currMatch]) {
-				++currMatch;
-			}
-			LCP[RA[suffixAbove]] = currMatch;
-			currMatch = std::max(0, currMatch-1);
-		}
-        LCP.pop_back();
-	}
-
-	void printSA() { printVector(SA); }
-	void printRA() { printVector(RA); }
-	void printLCP() { printVector(LCP); }
-	
-	void printVector(const std::vector<int>& v) {
-		if (v.size() > 0) {
-			printf("%d", v[0]);
-			for (int i = 1; i < v.size(); ++i) {
-				printf(" %d", v[i]);
-			} printf("\n");
-		}
-	}
-	// === END FUNCTION IMPLEMENTATIONS ============================
-	
-
-} // end namespace
-// = END SUFFIX ARRAY ================================================
+    SuffixArray<T,term>::LCP getLCP() const { return SuffixArray<T,term>::LCP(*this); }
 
 
-int main() {
 
-//	The following is an example workflow to compute and print out the suffix array and the longest common prefix
-	std::cin >> SuffixArray::str;
-	SuffixArray::str += '$';
-	SuffixArray::size = SuffixArray::str.length();
-	SuffixArray::buildSA();
-	SuffixArray::buildLCP();
-	SuffixArray::printSA();
-	SuffixArray::printLCP();
+    friend std::ostream &operator<<(std::ostream &os, const SuffixArray<T,term> &suf_arr) {
+        auto it = std::begin(suf_arr.sa);
+        if (it != std::end(suf_arr.sa)) {
+            os << (*it); ++it;
+            for (; it != std::end(suf_arr.sa); ++it) { os << ' ' << (*it); }
+        }
+        return os;
+    }
 
-	return 0;
-}
+    class LCP {
+    private:
+        size_t size;
+        std::vector<int> lcp;
+    public:
+        LCP(const SuffixArray &suf_arr) : size{std::max(size_t{},suf_arr.getSize())}, lcp{std::vector<int>(size, 0)} {
+            int curMatch = 0;
+            for (int i = 0; i < static_cast<int>(suf_arr.getSize())-1; ++i) {
+                int curSuffixRank = suf_arr.getRank(i);
+                if (curSuffixRank == 0) { curMatch = lcp[curSuffixRank] = 0; continue; }
+                int suffixAbove = suf_arr[curSuffixRank - 1];
+
+                while (suf_arr.str[i+curMatch] == suf_arr.str[suffixAbove+curMatch]) ++curMatch;
+
+                lcp[curSuffixRank] = curMatch;
+                curMatch = std::max(0, curMatch-1);
+            }
+        }
+
+        size_t getSize() const { return size; }
+        int operator[](const int &i) const { return lcp[i]; }
+
+        friend std::ostream &operator<<(std::ostream &os, const SuffixArray<T,term>::LCP &lcp_arr) {
+            auto it = std::begin(lcp_arr.lcp);
+            if (it != std::end(lcp_arr.lcp)) {
+                os << (*it); ++it;
+                for (; it != std::end(lcp_arr.lcp); ++it) { os << ' ' << (*it); }
+            }
+            return os;
+        }
+    };
+
+};
