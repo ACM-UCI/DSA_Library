@@ -4,7 +4,11 @@ class mint{
 	int n;
 	int mod;
 public:
-	mint(int a = 0, int b = 1e9+7) : n{a}, mod{b}{};
+	mint(int a = 0, int b = 1e9+7){
+		this->n = a;
+		this->mod = b;
+		this->n %= b;
+	};
 	friend std::ostream& operator<<(std::ostream& out, const mint& m);
 	friend std::istream& operator>>(std::istream& in, mint& m);
 
