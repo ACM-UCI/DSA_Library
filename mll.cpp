@@ -4,7 +4,11 @@ class mll{
 	long long n;
 	long long mod;
 public:
-	mll(long long a = 0, long long b = 1e9+7) : n{a}, mod{b}{};
+	mll(long long a = 0, long long b = 1e9+7){
+		this->n = a;
+		this->mod = b;
+		this->n %= b;
+	};
 	friend std::ostream& operator<<(std::ostream& out, const mll& m);
 	friend std::istream& operator>>(std::istream& in, mll& m);
 
