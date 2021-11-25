@@ -1,163 +1,132 @@
-#include <array>
-#include <vector>
-#include <string>
-#include <queue>
-#include <iostream>
-#include <utility>
+/*
+ *        _                                     _      _    
+ *   __ _| |__   ___     ___ ___  _ __ __ _ ___(_) ___| | __
+ *  / _` | '_ \ / _ \   / __/ _ \| '__/ _` / __| |/ __| |/ /
+ * | (_| | | | | (_) | | (_| (_) | | | (_| \__ \ | (__|   < 
+ *  \__,_|_| |_|\___/   \___\___/|_|  \__,_|___/_|\___|_|\_\
+ *                                                          
+ *
+ */
+
 #include <algorithm>
 
-class AhoTrie {
-public:
-    struct Node {
-        std::array<Node *, 26> children;
-        Node *failure;
-        Node *output;
-        int outputIndex;
+#include <vector>
+#include <array>
+#include <queue>
+#include <string>
 
-        Node() : failure{nullptr}, output{nullptr}, outputIndex{-1} {
-            std::fill(std::begin(children), std::end(children), nullptr);
+class Aho {
+private:
+    struct Node {
+        Node *suffix;   // pointer to longest prefix that is a suffix of this node
+        Node *output;   // pointer to longest word that is a suffix of this node
+        std::vector<int> wordids;   // ids of all words terminated at this node (allows for duplicate words in dictionary
+        std::array<Node *, 256> c;  // links to children of node
+
+        Node() : suffix{nullptr}, output{nullptr}, wordids{std::vector<int>()} {
+            std::fill(std::begin(c), std::end(c), nullptr);
         }
     };
 
 private:
     Node *root;
-    std::vector<std::string> dictionary;
 
-    void cleanTrie(Node *curr) {
-        if (curr == nullptr) return;
-        for (Node *child : curr->children) {
-            cleanTrie(child);
+public:
+    class AhoAutomata {
+    private:
+        Aho::Node *root;
+        Aho::Node *curr;
+    public:
+        AhoAutomata(Aho::Node *root) : root{root}, curr{root} { }
+
+        // Advances the AhoAutomata to the next character, follows suffix link on failure
+        void next(char c) {
+            Aho::Node *tmp = curr;
+            while (tmp->c[c] == nullptr && tmp != root) { tmp = tmp->suffix; }
+            if (tmp->c[c] != nullptr) { curr = tmp->c[c]; }
+            else { curr = root; }
         }
-        delete curr;
+
+
+        class Iterator {
+        private:
+            Node *outputnode;
+            int index;
+        public:
+            Iterator(Node *outputnode) : outputnode{outputnode}, index{0} {
+                if (this->outputnode != nullptr && this->outputnode->wordids.empty()) { this->outputnode = outputnode->output; }
+            }
+
+            int operator*() { return outputnode->wordids[index]; }
+            Iterator &operator++() {
+                if (outputnode != nullptr) {
+                    if (++index >= static_cast<int>(outputnode->wordids.size())) {
+                        outputnode = outputnode->output;
+                        index = 0;
+                    }
+                }
+                return *this;
+            }
+
+            bool operator==(const Iterator &other) { return outputnode == other.outputnode && index == other.index; }
+            bool operator!=(const Iterator &other) { return outputnode != other.outputnode || index != other.index; }
+        };
+
+        AhoAutomata::Iterator begin() { return AhoAutomata::Iterator(curr); }
+        AhoAutomata::Iterator end() { return AhoAutomata::Iterator(nullptr); }
+    };
+
+private:
+    // Perform BFS to construct suffix and output links
+    void computeLinks() {
+        root->suffix = root;            // suffix link of root is itself
+
+        std::queue<Node *> q;
+        for (Node *next : root->c) if (next != nullptr) {
+            next->suffix = root;        // direct decendents of root have suffix link pointing to root
+            q.push(next);
+        }
+
+        while (!q.empty()) {
+            Node *curr = q.front(); q.pop(); // curr will already have its suffix link built, we will build for children
+            for (int c = 0; c < 256; ++c) if (curr->c[c] != nullptr) {
+                Node *suffixofcurr = curr->suffix;  // a proper suffix of curr which will be checked to find a proper suffix of curr->c[c]
+                while (suffixofcurr->c[c] == nullptr && suffixofcurr != root) { suffixofcurr = suffixofcurr->suffix; }
+                if (suffixofcurr->c[c] != nullptr) { curr->c[c]->suffix = suffixofcurr->c[c]; }
+                else { curr->c[c]->suffix = root; }
+                q.push(curr->c[c]);
+            }
+            if (!(curr->suffix->wordids.empty())) { curr->output = curr->suffix; }
+            else { curr->output = curr->suffix->output; }
+        }
     }
 
 public:
-    AhoTrie() : root{new Node()} { }
-
-    ~AhoTrie() { cleanTrie(root); }
-
-    void addWord(const std::string &s) {
-        Node *curr = root;
-        for (char c : s) {
-            if (curr->children[c-'a'] == nullptr) {
-                curr->children[c-'a'] = new Node();
+    Aho(const std::vector<std::string> &dict) : root{new Node()} {
+        for (int i = 0; i < static_cast<int>(dict.size()); ++i) {
+            Node *curr = root;
+            for (const char &c : dict[i]) {
+                if (curr->c[c] == nullptr) { curr->c[c] = new Node(); }
+                curr = curr->c[c];
             }
-            curr = curr->children[c-'a'];
+            curr->wordids.push_back(i);
         }
-        curr->outputIndex = static_cast<int>(dictionary.size());
-        dictionary.push_back(s);
+
+        computeLinks();
     }
 
-    void computeFailures() {
-        root->failure = root;
+    ~Aho() {
         std::queue<Node *> q;
-        for (Node *node : root->children) if (node != nullptr) { q.push(node); node->failure = root; }
-
+        q.push(root);
         while (!q.empty()) {
             Node *curr = q.front(); q.pop();
-
-            for (int i = 0; i < 26; ++i) if (curr->children[i] != nullptr) {
-                Node *tmp = curr->failure;
-                while (tmp->children[i] == nullptr && tmp != root) {
-                    tmp = tmp->failure;
-                }
-
-                if (tmp->children[i] == nullptr) {
-                    curr->children[i]->failure = root;
-                } else {
-                    curr->children[i]->failure = tmp->children[i];
-                }
-
-                q.push(curr->children[i]);
+            for (int c = 0; c < 256; ++c) if (curr->c[c] != nullptr) {
+                q.push(curr->c[c]);
             }
-
-            if (curr->failure->outputIndex >= 0) {
-                curr->output = curr->failure;
-            } else {
-                curr->output = curr->failure->output;
-            }
+            delete curr;
         }
     }
 
-    std::vector<std::vector<int>> search(std::string &text) {
-        Node *curr = root;
-        std::vector<std::vector<int>> matches(static_cast<int>(dictionary.size()));
+    AhoAutomata getAutomata() { return AhoAutomata(root); }
 
-        for (int i = 0; i < static_cast<int>(text.size()); ++i) {
-            char c = text[i];
-            if (curr->children[c-'a'] == nullptr) {
-                while (curr != root && curr->children[c-'a'] == nullptr) {
-                    curr = curr->failure;
-                }
-
-                if (curr->children[c-'a'] != nullptr) { --i; }
-            } else {
-                curr = curr->children[c-'a'];
-                if (curr->outputIndex >= 0) {
-                    matches[curr->outputIndex].push_back(i);
-                }
-
-                Node *tmp = curr->output;
-                while (tmp != nullptr) {
-                    matches[tmp->outputIndex].push_back(i);
-                    tmp = tmp->output;
-                }
-            }
-        }
-
-        return matches;
-    }
-
-    void debug() {
-        std::cout << "root " << root << std::endl;
-        std::queue<std::pair<char, Node *>> q;
-        for (int i = 0; i < 26; ++i) if (root->children[i] != nullptr) { q.push({i+'a', root->children[i]}); }
-
-        while (!q.empty()) {
-            int lvl = static_cast<int>(q.size());
-
-            for (int x = 0; x < lvl; ++x) {
-                std::pair<char, Node *> curr = q.front(); q.pop();
-                if (curr.second == nullptr) {
-                    std::cout << " | ";
-                    continue;
-                } else {
-                    std::cout << "(" << curr.first << "," << curr.second << "<" << curr.second->failure << "," << curr.second->output << "," << curr.second->outputIndex << ">) ";
-                    bool added = false;
-                    for (int i = 0; i < 26; ++i) if (curr.second->children[i] != nullptr) {
-                        q.push({i+'a', curr.second->children[i]});
-                        added = true;
-                    }
-                    if (added)
-                        q.push({' ', nullptr});
-                }
-            }
-            std::cout << std::endl;
-        }
-    }
 };
-
-int main() {
-    std::vector<std::string> dictionary = { "p", "pup" };
-
-    AhoTrie t;
-    for (std::string &s : dictionary) {
-        t.addWord(s);
-    }
-
-    t.computeFailures();
-
-    t.debug();
-
-    std::string text = "popup";
-    std::vector<std::vector<int>> matches = t.search(text);
-    for (int i = 0; i < static_cast<int>(matches.size()); ++i) {
-        std::cout << dictionary[i] << ":";
-        for (int ind : matches[i]) {
-            std::cout << ' ' << ind;
-        }
-        std::cout << std::endl;
-    }
-
-    return 0;
-}
