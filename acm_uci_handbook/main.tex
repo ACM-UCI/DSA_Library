@@ -1,0 +1,201 @@
+% ACM@UCI Handbook
+%
+% Organizational Notes
+% 3 Sections: Introduction, Data Structures, Algorithms
+% Data Structures and Algorithms organized into category
+%   These categories are sorted alphabetically
+% Within each category, subsections are sorted alphabetically
+
+
+
+
+\documentclass[letterpaper,11pt,twoside]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{indentfirst}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{inconsolata}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\title{ACM@UCI Handbook}
+\author{Ryan Yoshida}
+
+\fancyhead{}
+\fancyfoot{}
+\fancyhead[RO,LE] {\slshape \rightmark}
+\fancyhead[LO,RE] {\slshape ACM@UCI Handbook}
+\fancyfoot[C] {\thepage}
+
+\definecolor{codeblockbg}{rgb}{0.95,0.95,0.92}
+\definecolor{codeblockcomment}{rgb}{0.75,0.75,0.75}
+\lstdefinestyle{codeblock} {
+    backgroundcolor=\color{codeblockbg},
+    commentstyle=\color{codeblockcomment},
+    basicstyle=\ttfamily\small,
+    xleftmargin=\fboxsep,
+    xrightmargin=-\fboxsep
+}
+
+\lstset{style=codeblock}
+
+\newcommand{\PartDivider}[1] {
+    \clearpage
+    \thispagestyle{empty}
+    \vspace*{\stretch{2}}
+    \begin{center}
+        \part{#1}
+    \end{center}
+    \vspace*{\stretch{4}}
+    \clearpage
+}
+
+\begin{document}
+    \input{cover.tex}
+    
+    \setlength{\parindent}{0.5in}
+    \singlespace
+    \pagestyle{fancy}
+
+    \tableofcontents
+
+    \PartDivider{Introduction}
+        \section{About}
+            \subsection{Purpose}
+            The ACM@UCI Handbook is a printable resource intended for use in contests such as ICPC.
+            It provides data structure templates and code snippets for quick and reliable implementation.
+            Priority is placed on data structures and algorithms which meet one or several of the following criteria: commonly seen in contests, difficult/tedious to remember/implement, and/or too niche to find in other competitive programming handbooks.
+
+            This handbook is not intended to be used as a teaching resource.
+            Explanations of underlying theory and concepts for the provided data structures and algorithms will be provided only insofar as it is expedient to their implementation in contest.
+            To make the best use of this handbook you should first have a strong understanding the purpose and theory behind every data structure and algorithm.
+
+            \subsection{Organization}
+
+
+    \PartDivider{Data Structures}
+        \section{Graphs}
+            \subsection{Link-Cut Tree}
+            \subsection{Splay Tree}
+            \subsection{Union Find}
+
+        \section{Range Queries}
+            \subsection{Segment Tree}
+                \subsubsection{Point Update}
+                \subsubsection{Lazy Propagation}
+            \subsection{Square Root Decomposition}
+            \subsection{Sparse Table}
+            \subsection{Wavelet Tree}
+
+        \section{String Processing}
+            \subsection{Aho Corasick}
+                Aho Corasick creats a finite automata on a prefix trie (\ref{trie}) to match occurences of a set of strings in a search string.
+                Equivalently, it can be seen as an implementation of Knuth Morris Pratt (\ref{kmp}) for a set of strings rather than one pattern string.
+                It works the same as KMP by creating pointers to the longest proper suffix that is a prefix for each index of each string in the set.
+                Construction of the Aho Corasic Trie is $O(M)$ where $M$ is the sum of character counts of all pattern strings.
+                Iteration through the search string is worst case $O(NK)$ where $N$ is the length of the search string and $K$ is the number of pattern strings.
+                In most cases however, it is safe to assume that iteration through the search string is $O(N)$.
+
+                \textbf{Implementation:} The Aho Corasick Trie is encapsulated in a class.
+                Due to the nature of the Aho Corasick automata construction algorithm, an \verb|Aho| object must be constructed with a vector of pattern strings \verb|dict|.
+                To traverse the Aho Corasick Trie, a helper class \verb|Aho::AhoAutomata| is provided.
+                The \verb|AhoAutomata| represents a state (node) in the Aho Corasick Trie.
+                An iterator is provided for the \verb|AhoAutomata| to iterate through the \emph{ids} of all pattern strings in \verb|dict| that are terminated at that node (the \emph{id} of a pattern string is its index in \verb|dict|).
+                Note that the \verb|Node| struct stores the child pointers as an \verb|std::array| of length 256.
+                This can be adjusted based on the problem.
+                \lstinputlisting[language=C++]{snippets/aho_corasick.cpp}
+
+                \textbf{Example Usage:} An example of how to use the \verb|Aho| class is provided below.
+                \lstinputlisting[language=c++]{snippets/aho_corasick_example.cpp}
+            \subsection{EerTreE}
+            \subsection{Suffix Array}
+                \subsubsection{Longest Common Prefix}
+            \subsection{Trie} \label{trie}
+
+
+    \PartDivider{Algorithms}
+        \section{Geometry}
+            \subsection{Closest Points}
+            \subsection{Convex Hull}
+
+        \section{Graphs}
+            \subsection{Bellman-Ford's Algorithm: Single Source Shortest Path}
+            \subsection{Dijkstra's Algorithm: Single Source Shortest Path}
+            \subsection{Floyd-Warshall's Algorithm: All Pairs Shortest Path}
+            \subsection{Minimum Spanning Tree}
+                \subsubsection{Kruskall's Algorithm}
+                \subsubsection{Prim's Algorithm}
+            \subsection{Network Flow}
+                \subsubsection{Edmonds Karp's Algorithm}
+                \subsubsection{Dinic's Algorithms}
+                \subsubsection{Hopcroft Karp's Algorithm}
+                \subsubsection{Min-Cost Max Flow}
+            \subsection{Tarjan's Algorithm}
+                \subsubsection{Bridges \& Articulation Points}
+                \subsubsection{Strongly Connected Components}
+            \subsection{Trees}
+                \subsection{Binary Lift}
+                \subsection{Lowest Common Ancestor}
+
+        \section{Math}
+            \subsection{Arithmetic Sum}
+                Computes an arithmetic sum constant time.
+                The function was intentionally designed to have a similar function signature to Python's \verb|range| function.
+                Thus, \verb|arithmetic_sum(start,end,step)| will yield the same result as \verb|sum(range(start,end,step))| in Python, but it will do so in $O(1)$.
+                For this function to work, $start < end$ and $step > 0$.
+
+                \textbf{Important:} \verb|start| is inclusive, \verb|end| is exclusive.
+                \lstinputlisting[language=C++]{snippets/arithmetic_sum.cpp}
+                \lstinputlisting[language=Python]{snippets/arithmetic_sum.py}
+            \subsection{Chinese Remainder Theorem}
+            \subsection{Division Over Modulo}
+                Computes $\frac{a}{b} \mod mod$ by multiplying \verb|a| to the inverse mod of \verb|b|.
+                Uses the power over modulo function described in \ref{power}.
+                This function only works if \verb|b| and \verb|mod| are relatively coprime (i.e. $gcd(b,mod) = 1$).
+                Can be used to compute inverse modulo by setting \verb|a=1|.
+                The time complexity of this algorithm is $O(\log_2{mod})$.
+                \lstinputlisting[language=C++]{snippets/division.cpp}
+                \lstinputlisting[language=Python]{snippets/division.py}
+            \subsection{Fast Fourier Transform}
+            \subsection{Geometric Sum}
+                \subsubsection{Finite Bounds}
+                    Returns $\sum_{k=start}^{end-1}a^{k} = \frac{a^{start} - a^{end}}{1 - a}$.
+                    \lstinputlisting[language=C++]{snippets/geometric_sum_finite.cpp}
+                    \lstinputlisting[language=Python]{snippets/geometric_sum_finite.py}
+                \subsubsection{Finite Start, Infinite End}
+                    Returns $\sum_{k=start}^{\infty}a^{k} = \frac{a^{start}}{1 - a}$.
+                    \lstinputlisting[language=C++]{snippets/geometric_sum_infinite.cpp}
+                    \lstinputlisting[language=Python]{snippets/geometric_sum_infinite.py}
+                \subsubsection{Infinite Scaled Sum}
+                    Returns $\sum_{k=0}^{\infty}ka^{k} = \frac{a}{(1-a)^{2}}$
+                    \lstinputlisting[language=C++]{snippets/geometric_sum_scaled.cpp}
+                    \lstinputlisting[language=Python]{snippets/geometric_sum_scaled.py}
+            \subsection{Greatest Common Divisor} \label{gcd}
+                The algorithm for finding greatest common divisor is Euclid's algorithm.
+                The time complexity of this algorithm is $O(\log_{10} max(a,b))$.
+                \lstinputlisting[language=C++]{snippets/gcd.cpp}
+                \lstinputlisting[language=Python]{snippets/gcd.py}
+            \subsection{Lowest Common Multiple}
+                The algorithm for finding lowest common multiple uses Euclid's algorithm for greatest common divisor (\ref{gcd}).
+                The time complexity of this algorithm is $O(\log_{10} max(a,b))$.
+                \lstinputlisting[language=C++]{snippets/lcm.cpp}
+                \lstinputlisting[language=Python]{snippets/lcm.py}
+            \subsection{Modulo} \label{modulo}
+                A safe modulo for use with negative numbers.
+                Use for languages like C++ when \verb|a| can be negative.
+                \lstinputlisting[language=C++]{snippets/modulo.cpp}
+            \subsection{Power Over Modulo} \label{power}
+                Returns $b^{k} \mod mod$.
+                This implementation cannot handle $b < 0$ in C++.
+                To handle this case, use the safe modulo described in section \ref{modulo}.
+                Note that no Python implementation is provided because it is already implemented in the standard library function \verb|pow(a,b[,mod])|.
+                The time complexity of this algorithm is $O(\log_{2}(k))$.
+                \lstinputlisting[language=C++]{snippets/power.cpp}
+        \section{Strings}
+            \subsection{Knuth Morris Pratt: String Matching} \label{kmp}
+\end{document}
