@@ -111,11 +111,24 @@
                 \lstinputlisting[language=C++]{snippets/aho_corasick.cpp}
 
                 \textbf{Example Usage:} An example of how to use the \verb|Aho| class is provided below.
-                \lstinputlisting[language=c++]{snippets/aho_corasick_example.cpp}
+                \lstinputlisting[language=C++]{snippets/aho_corasick_example.cpp}
             \subsection{EerTreE}
+                EerTreE or Palindromic Tree is a data structuring for finding and tracking palindromes in a string.
+                It is similar to the Aho Corasick tree as it uses suffix links to the longest proper suffix that is a palindrome.
+                This implementation provides an iterator that, at each character, iterates through the lengths of all palindromes ending at that character.
+                Construction of the EerTreE is $O(N)$.
+                \lstinputlisting[language=C++]{snippets/EerTreE.cpp}
             \subsection{Suffix Array}
-                \subsubsection{Longest Common Prefix}
+                A suffix array sorts the suffixes of a string in lexicographical order.
+                The below provided implementation constructs a suffix array in $O(N\log N)$.
+                Also included in this implementation is the construction of the longest common prefix array which gives the longest common prefix between suffixes adjacent in the suffix array.
+                The \verb|LCP| array is constructed in $O(N)$.
+                \lstinputlisting[language=C++]{snippets/suffix_array.cpp}
             \subsection{Trie} \label{trie}
+                A Trie (short for reTRIEval tree), or Prefix Tree, stores a dictionary of strings in a manner that makes lookup by their prefix very efficient.
+                Construction is $O(N)$ where $N$ is the sum of character counts of all dictionary strings.
+                Lookup of a word or prefix is $O(M)$ where $M$ is the length of the query string.
+                \lstinputlisting[language=C++]{snippets/trie.cpp}
 
 
     \PartDivider{Algorithms}
