@@ -90,6 +90,14 @@
                 \subsubsection{Lazy Propagation}
             \subsection{Square Root Decomposition}
             \subsection{Sparse Table}
+                Sparse tables are data structures which answer range queries in $O(1)$.
+                Its construction takes $O(N\log N)$ and it requires $O(N\log N)$ space.
+                It only works if the operation is idempotent (i.e. for operation $*$: $a*a = a$).
+                Examples of idempotent functions include \emph{min}, \emph{gcd}.
+                
+                The provided C++ implementation takes an IdempotentFunc as a template type.
+                Pass a type with an implemented functor for this.
+                \lstinputlisting[language=C++]{snippets/sparse_table.cpp}
             \subsection{Wavelet Tree}
 
         \section{String Processing}
