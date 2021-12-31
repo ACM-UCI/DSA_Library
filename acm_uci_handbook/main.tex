@@ -148,6 +148,19 @@
             \subsection{Bellman-Ford's Algorithm: Single Source Shortest Path}
             \subsection{Dijkstra's Algorithm: Single Source Shortest Path}
             \subsection{Floyd-Warshall's Algorithm: All Pairs Shortest Path}
+                Floyd-Warshall's Algorithm computes the shortest path between every pair of nodes in a graph.
+                Acting on an adjacency matrix \verb|adj| where \verb|adj[u][v]| is the weight of an edge from \verb|u| to \verb|v|, it fills the matrix so that \verb|adj[u][v]| contains the cost of the shortest path between vertices \verb|u| and \verb|v|.
+                This is done in $O(N^{3})$.
+
+                For implementation ensure that the adjacency matrix is filled in properly.
+                Be sure to consider the case of self-loops: should they be initialized to \verb|0|?
+                Be sure to consider double edges (more than one edge between two vertices): should you take the minimum?
+                Are there negative edge weights?
+                This may result in negative cycles.
+                A negative cycle will result in \verb|adj[u][u] < 0| after Floyd Warshall's is complete.
+
+                \lstinputlisting[language=C++]{snippets/floyd_warshalls.cpp}
+                \lstinputlisting[language=Python]{snippets/floyd_warshalls.py}
             \subsection{Minimum Spanning Tree}
                 \subsubsection{Kruskall's Algorithm}
                 \subsubsection{Prim's Algorithm}
@@ -160,8 +173,8 @@
                 \subsubsection{Bridges \& Articulation Points}
                 \subsubsection{Strongly Connected Components}
             \subsection{Trees}
-                \subsection{Binary Lift}
-                \subsection{Lowest Common Ancestor}
+                \subsubsection{Binary Lift}
+                \subsubsection{Lowest Common Ancestor}
 
         \section{Math}
             \subsection{Arithmetic Sum}
