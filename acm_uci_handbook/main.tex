@@ -230,6 +230,15 @@
                 Note that no Python implementation is provided because it is already implemented in the standard library function \verb|pow(a,b[,mod])|.
                 The time complexity of this algorithm is $O(\log_{2}(k))$.
                 \lstinputlisting[language=C++]{snippets/power.cpp}
+            \subsection{Sum of Squares}
+                Returns $\sum_{k=0}^{end} k^{2} = \frac{n(n+1)(2n+1)}{6}$
+                \lstinputlisting[language=C++]{snippets/sum_of_squares.cpp}
+                \lstinputlisting[language=Python]{snippets/sum_of_squares.py}
+            \subsection{Sum of Cubes}
+                Returns $\sum_{k=0}^{end} k^{3} = \frac{n^{2}(n+1)^{2}}{4}$
+                \lstinputlisting[language=C++]{snippets/sum_of_cubes.cpp}
+                \lstinputlisting[language=Python]{snippets/sum_of_cubes.py}
         \section{Strings}
             \subsection{Knuth Morris Pratt: String Matching} \label{kmp}
+            \subsection{Levinshtein Distance: Edit Distance}
 \end{document}
