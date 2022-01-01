@@ -140,6 +140,13 @@
 
 
     \PartDivider{Algorithms}
+        \section{Dynamic Programming}
+            \subsection{Sum over Subsets}
+                Given an array \verb|A|, sum over subsets fills array \verb|S| such that \verb|S[mask]| is the sum of all values at indices \verb|s| where $s \subseteq mask$ in \verb|A|.
+                This algorithm is $O(N2^{N})$
+                \lstinputlisting[language=C++]{snippets/sum_over_subsets.cpp}
+                \lstinputlisting[language=Python]{snippets/sum_over_subsets.py}
+
         \section{Geometry}
             \subsection{Closest Points}
             \subsection{Convex Hull}
@@ -238,6 +245,11 @@
                 Returns $\sum_{k=0}^{end} k^{3} = \frac{n^{2}(n+1)^{2}}{4}$
                 \lstinputlisting[language=C++]{snippets/sum_of_cubes.cpp}
                 \lstinputlisting[language=Python]{snippets/sum_of_cubes.py}
+        \section{Miscellaneous}
+            \subsection{Subset Enumeration}
+                Given a bitmask \verb|m|, the following iterates through all submasks of \verb|m|.
+                \lstinputlisting[language=C++]{snippets/subset_enumeration.cpp}
+                \lstinputlisting[language=Python]{snippets/subset_enumeration.py}
         \section{Strings}
             \subsection{Knuth Morris Pratt: String Matching} \label{kmp}
             \subsection{Levinshtein Distance: Edit Distance}
