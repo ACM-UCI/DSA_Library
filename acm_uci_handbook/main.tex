@@ -39,7 +39,8 @@
     commentstyle=\color{codeblockcomment},
     basicstyle=\ttfamily\small,
     xleftmargin=\fboxsep,
-    xrightmargin=-\fboxsep
+    xrightmargin=-\fboxsep,
+    breaklines=true
 }
 
 \lstset{style=codeblock}
@@ -148,11 +149,25 @@
                 \lstinputlisting[language=Python]{snippets/sum_over_subsets.py}
 
         \section{Geometry}
+            \subsection{Definitions}
+            This section will begin with some geometric object definitions.
+            For clarity, all references made to these class definitions will use the \verb|geo| namespace.
+            Note that some problems benefit from alternative definitions than that given here.
+
+            \subsubsection{2D Definitions}
+                \lstinputlisting[language=C++]{snippets/geo/point2d.cpp}
+                \lstinputlisting[language=C++]{snippets/geo/line2d.cpp}
+
+            \subsubsection{3D Definitions}
+                \lstinputlisting[language=C++]{snippets/geo/point3d.cpp}
+
             \subsection{Closest Points}
             \subsection{Convex Hull}
+                \lstinputlisting[language=C++]{snippets/convex_hull.cpp}
 
         \section{Graphs}
             \subsection{Bellman-Ford's Algorithm: Single Source Shortest Path}
+                \lstinputlisting[language=C++]{snippets/bellman_ford.cpp}
             \subsection{Dijkstra's Algorithm: Single Source Shortest Path}
             \subsection{Floyd-Warshall's Algorithm: All Pairs Shortest Path}
                 Floyd-Warshall's Algorithm computes the shortest path between every pair of nodes in a graph.
@@ -174,6 +189,7 @@
             \subsection{Network Flow}
                 \subsubsection{Edmonds Karp's Algorithm}
                 \subsubsection{Dinic's Algorithms}
+                    \lstinputlisting[language=C++]{snippets/dinics.cpp}
                 \subsubsection{Hopcroft Karp's Algorithm}
                 \subsubsection{Min-Cost Max Flow}
             \subsection{Tarjan's Algorithm}
@@ -246,10 +262,24 @@
                 \lstinputlisting[language=C++]{snippets/sum_of_cubes.cpp}
                 \lstinputlisting[language=Python]{snippets/sum_of_cubes.py}
         \section{Miscellaneous}
+            \subsection{G++ Compiler Args}
+                \lstinputlisting[language=Bash]{snippets/g++_args.txt}
+            \subsection{GNU Policy Based Data Structures}
+                \lstinputlisting[language=Bash]{snippets/gnu_pds.cpp}
+            \subsection{Gray Code}
+                \lstinputlisting[language=C++]{snippets/gray_code.cpp}
+                \subsubsection{Inverse Gray Code}
+                    \lstinputlisting[language=C++]{snippets/inverse_gray_code.cpp}
+            \subsection{Large Primes}
+                \lstinputlisting[language=Clean]{./snippets/large_primes.txt}
+            \subsection{Prime Numbers Up To 5000}
+                \lstinputlisting[language=Clean]{./snippets/primes.txt}
             \subsection{Subset Enumeration}
                 Given a bitmask \verb|m|, the following iterates through all submasks of \verb|m|.
                 \lstinputlisting[language=C++]{snippets/subset_enumeration.cpp}
                 \lstinputlisting[language=Python]{snippets/subset_enumeration.py}
+            \subsection{VimRC}
+                \lstinputlisting[language=Clean]{./snippets/quick_vimrc}
         \section{Strings}
             \subsection{Knuth Morris Pratt: String Matching} \label{kmp}
             \subsection{Levinshtein Distance: Edit Distance}

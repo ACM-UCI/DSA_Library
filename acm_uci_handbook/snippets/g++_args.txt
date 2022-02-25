@@ -1,0 +1,13 @@
+g++ $(CFLAGS) -o $(TARGET) $(SRC) $(LDFLAGS)
+
+# CFLAGS: c++ version (e.g. -std=c++11)
+# TARGET: target executable (e.g. a.out)
+# SRC: source files (e.g. main.cpp)
+# LDFLAGS: additional compiler flags
+#   - useful flags incude:
+#       > -g (gdb)
+#       > -Wall (catch all warnings)
+#       > -fsanitize=address (display more information on segfault)
+#       > -Werror (make all warnings into errors)
+#       > -pedantic (issue warnings demanded by strict ISO C++ rules)
+#       > -O2 (optimize code, longer compile time)
